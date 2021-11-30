@@ -12,7 +12,7 @@ server.use(express)
 //Need to add this line before Endpoints request bodies, other wise bodies will be undefined.
 
 
-server.use("/blogs", blogsRouter)
+server.use("/authors", blogsRouter)
 
 console.table(listEndpoints(server))
 
