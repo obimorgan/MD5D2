@@ -49,12 +49,51 @@ blogsRouter.post("/", (req, res) => {
 //Fetch Blogs
 blogsRouter.get("/", (req, res) => {
     // 1) read the content blogs.json file
-    
+    console.log("IMPORT META URL: ", import.meta.url)
+    console.log("Current file path is:", currentFilePath)
+
+    const fileContent = fs.readFileSync(usersJSONPath)
+    // returns buffer object only machine readable
+
+    console.log("File Content:", JSON.parse(fileContent))
+
+    // Parsing the unreadable files in json readable file
+    const blogsArray = JSON.parse(fileContent)
+
+    // Sends back the response
+    res.send(blogsArray)
 })
 
-blogsRouter.get()
+// Fetch blogs by ID
+blogsRouter.get("/:blogId", (req, res) => {
+    console.log("Blog's Id:", req.params.blogId)
 
-blogsRouter.put()
+    // 1)Read the blogs content
+    const blogs = JSON.parse(fs.readFileSync(blogsJSONPath))
+
+    // 2)Find the blog by ID in the array
+    const blog = blogs.find(b=> b.id === res.params.blogId)
+
+    // 3) Send the found back as response
+    res.send(blog)
+})
+
+// Edit blog by ID
+blogsRouter.put("/:blogId", (req, res) => {
+
+    // 1) Read blog content
+    const blogs = JSON.parse(fs.readFileSync(usersJSONPath))
+
+    //2) Edit Blog
+    const index = blogs.findIndex(b => b.id === req.params.blogId)
+    const updateBlog = { ...blogs[index], ...req.body}
+
+    blogs[index] = updateBlog
+
+    // 3) save the edited content to the list of blogs
+    fs.writeFileSync(blogsJSONPath, JSON.stringify(blogs))
+    
+})
 
 blogsRouter.delete()
 

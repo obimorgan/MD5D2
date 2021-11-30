@@ -1,7 +1,9 @@
 import express from "express"
+
+// import express from "express"
 import listEndpoints from "express-list-endpoints"
 
-// import blogsRouter from "services/blogs/index.js"
+import blogsRouter from "services/blogs/index.js"
 
 const server = express()
 const port =  3001
