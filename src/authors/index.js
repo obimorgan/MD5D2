@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 // import { dirname, join } from "path";
 import path, { dirname } from "path";
 import uniqid from "uniqid";
+import { send } from "process";
 
 // 1) start from the current file
 
@@ -22,6 +23,7 @@ console.log(authorsRouter);
 
 console.log("IMPORT META URL: ", import.meta.url);
 console.log("Current file path is:", authorsFilePath);
+
 //---- Linking the router to each request method
 
 //Fetch Authors
@@ -46,14 +48,6 @@ authorsRouter.get("/", async (req, res) => {
   }
 });
 
-// //Fetch an author by Id
-// authorsRouter.get("/:id", async (req, res) => {
-//   try {
-//   } catch (error) {
-//     res.sen(500).send({ mesage: error.message });
-//   }
-// });
-
 //Post a new author
 authorsRouter.post("/", async (req, res) => {
   // console.log("The res is:", res);
@@ -68,6 +62,7 @@ authorsRouter.post("/", async (req, res) => {
       id: uniqid(),
       name,
       surname,
+      email,
       dateOfBirth,
       avatar: ` https://ui-avatars.com/api/?name=${name}+${surname}`,
       createdAt: new Date(),
@@ -78,13 +73,15 @@ authorsRouter.post("/", async (req, res) => {
     const fileAsASttring = fileAsABuffer.toString();
     const fileAsJson = JSON.parse(fileAsASttring);
 
+    console.log(author);
+
     // 4) add new authors to the array(push)
     // authors.push(newauthors);
     fileAsJson.push(author);
 
     // 5) write the array back to the file
     // fs.writeFileSync(authorsJSONPath, JSON.stringify(authors));
-    fs.writeFileSync(authorsFilePath.JSON.stringify(fileAsJson))
+    fs.writeFileSync(authorsFilePath.JSON.stringify(fileAsJson));
 
     // const author = { ...req.body, createdAt: new Date(), id: uniqid() };
     // console.log(author);
@@ -114,37 +111,77 @@ authorsRouter.put("/:id", async (req, res) => {
   }
 });
 
-// // Fetch authors by ID
+
+//Fetch an author by Id
+authorsRouter.get("/:id", async (req, res) => {
+  try {
+    const fileAsABuffer = fs.readFileSync(authorsFilePath);
+    const fileAsASttring = fileAsABuffer.toString();
+    const fileAsJson = JSON.parse(fileAsASttring);
+    const author = fileAsJson.find(a => a.id === req.params.id)
+
+    if(!author) {
+      res.status(404).send({message:`The Author by this id: ${req.params.id} does not exist`})
+    }
+
+  } catch (error) {
+    res.sen(500).send({ mesage: error.message });
+  }
+});
+
 // authorsRouter.get("/:blogId", (req, res) => {
+
 //     console.log("Blog's Id:", req.params.blogId)
 
 //     // 1)Read the authors content
 //     const authors = JSON.parse(fs.readFileSync(authorsJSONPath))
 
 //     // 2)Find the blog by ID in the array
-//     const blog = authors.find(b=> b.id === res.params.blogId)
+//     const author = authors.find(b=> b.id === res.params.authors.id)
 
 //     // 3) Send the found back as response
-//     res.send(blog)
+//     res.send(author)
 // })
 
-// // Edit blog by ID
-// authorsRouter.put("/:blogId", (req, res) => {
+// Edit blog by ID
+authorsRouter.put("/:blogId", (req, res) => {
 
-//     // 1) Read blog content
-//     const authors = JSON.parse(fs.readFileSync(usersJSONPath))
+    // 1) Read blog content
+    const authors = JSON.parse(fs.readFileSync(usersJSONPath))
 
-//     //2) Edit Blog
-//     const index = authors.findIndex(b => b.id === req.params.blogId)
-//     const updateBlog = { ...authors[index], ...req.body}
+    //2) Edit Blog
+    const index = authors.findIndex(b => b.id === req.params.id)
+    const updateAuthor = { ...authors[index], ...req.body}
 
-//     authors[index] = updateBlog
+    authors[index] = updateAuthor
 
-//     // 3) save the edited content to the list of authors
-//     fs.writeFileSync(authorsJSONPath, JSON.stringify(authors))
+    // 3) save the edited content to the list of authors
+    fs.writeFileSync(authorsJSONPath, JSON.stringify(authors))
 
-// })
+})
 
-// authorsRouter.delete()
+// Delete author
+authorsRouter.delete("/:id", async (req, res) => {
+  try {
+    const fileAsABuffer = fs.readFileSync(authorsFilePath);
+    const fileAsASttring = fileAsABuffer.toString();
+
+    // Change const fileAsJson to let fileAsJson to enable delete
+    let fileAsJson = JSON.parse(fileAsASttring);
+    const author = fileAsJson.find(a => a.id === req.params.id)
+
+    if(!author) {
+      res.status(404).send({message:`The Author by this id: ${req.params.id} does not exist`})
+    }
+    fileAsJson = fileAsJson.filter(a => a.id !== req.params.id)
+    fs.writeFileSync(authorsFilePath, JSON.stringify(fileAsJson))
+    res.status(204).send()
+
+  } catch (error) {
+    res.sen(500).send({ mesage: error.message });
+  }
+});
+
+
 
 export default authorsRouter;
