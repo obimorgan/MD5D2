@@ -3,6 +3,7 @@ import express from "express";
 import usersSchema from "./usersSchema.js";
 import createHttpError from "http-errors";
 import { authorization } from "../middlewares/authorization.js";
+import { adminOnlyMiddleware } from "../middlewares/adminHandle.js";
 
 const UserRouter = express.Router();
 
@@ -45,7 +46,7 @@ UserRouter.route("/:userId")
       next(error);
     }
   })
-  .put(async (req, res, next) => {
+  .put(authorization, adminOnlyMiddleware, async (req, res, next) => {
     try {
       const userId = req.params.userId;
       const edituser = await usersSchema.findByIdAndUpdate(userId, req.body, {
@@ -64,7 +65,7 @@ UserRouter.route("/:userId")
       next(error);
     }
   })
-  .delete(async (req, res, next) => {
+  .delete(authorization, adminOnlyMiddleware, async (req, res, next) => {
     console.log("hello");
     try {
       const userId = req.params.userId;
