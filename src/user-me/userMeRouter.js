@@ -1,28 +1,13 @@
 /** @format */
 import express from "express";
-import usersSchema from "./usersSchema.js";
-import createHttpError from "http-errors";
 import { authorization } from "../middlewares/authorization.js";
-import { adminOnlyMiddleware } from "../middlewares/adminHandle.js";
 
-const UserRouter = express.Router();
+const userMeRouter = express.Router();
 
-UserRouter.route("/me")
-  .get(async (req, res, next) => {
-    try {
-      const userId = req.params.userId;
-      const user = await usersSchema.findById(userId);
-      if (user) {
-        res.status(201).send(user);
-      } else {
-        next(
-          createHttpError(404, "user with this id:", userId, "is not found")
-        );
-      }
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
+userMeRouter
+  .route("/me")
+  .get(authorization, async (req, res, next) => {
+    res.send(req.user);
   })
   .put(authorization, async (req, res, next) => {
     try {
@@ -41,4 +26,4 @@ UserRouter.route("/me")
       next(error);
     }
   });
-export default UserRouter;
+export default userMeRouter;

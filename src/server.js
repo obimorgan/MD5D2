@@ -6,6 +6,8 @@ import cors from "cors";
 import listEndpoints from "express-list-endpoints";
 import UserRouter from "./users/userRouter.js";
 import blogsRouter from "./blogs/blogsRouter.js";
+import userMeRouter from "./user-me/userMeRouter.js";
+import { errorHandlers } from "./middlewares/errorHandlers.js";
 
 const server = express();
 const PORT = 3001;
@@ -13,12 +15,14 @@ const PORT = 3001;
 server.use(express.json());
 server.use(cors());
 
-server.use("/users", UserRouter);
+server.use(errorHandlers);
+
+server.use("/users", UserRouter, userMeRouter);
 server.use("/blogs", blogsRouter);
 
 // mongoose.connect(process.env.MONGO_CONNECTION);
 mongoose.connect(
-  "mongodb+srv://obi:10Sora5864@strivemodule6.qilw9.mongodb.net/Module8?retryWrites=true&w=majority"
+  `mongodb+srv://obi:10Sora5864@strivemodule6.qilw9.mongodb.net/Module8?retryWrites=true&w=majority`
 );
 
 mongoose.connection.on("connected", () => {
