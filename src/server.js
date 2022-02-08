@@ -1,21 +1,30 @@
-import express from "express"
+/** @format */
 
-import listEndpoints from "express-list-endpoints"
+import mongoose from "mongoose";
+import express from "express";
+import cors from "cors";
+import listEndpoints from "express-list-endpoints";
+import UserRouter from "./users/userRouter.js";
+import blogsRouter from "./blogs/blogsRouter.js";
 
-import authorsRouter from "./authors/index.js"
+const server = express();
+const PORT = 3001;
 
-const server = express()
-const port =  3001
+server.use(express.json());
+server.use(cors());
 
-server.use(express.json())
-//Need to add this line before Endpoints request bodies, other wise bodies will be undefined.
+server.use("/", UserRouter);
+server.use("/blogs", blogsRouter);
 
+mongoose.connect(process.env.MONGO_CONNECTION);
 
-//Letting the server to access the authors/index.js file
-server.use("/", authorsRouter)
-
-console.log("The list of end Points:", listEndpoints(server))
-
-server.listen(port, () => {
-    console.log(`My server is running on port: ${port}`)
-})
+mongoose.connection.on("connected", () => {
+  console.log("Connected to Mongo");
+  server.listen(PORT, () => {
+    console.log("Server listens to port:", PORT);
+    console.table(listEndpoints(server));
+  });
+});
+mongoose.connection.on("error", (err) => {
+  console.log(err);
+});
