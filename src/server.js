@@ -17,13 +17,11 @@ server.use(cors());
 
 server.use(errorHandlers);
 
-server.use("/users", UserRouter, userMeRouter);
+server.use("/users", UserRouter);
 server.use("/blogs", blogsRouter);
+server.use("/me", userMeRouter);
 
-// mongoose.connect(process.env.MONGO_CONNECTION);
-mongoose.connect(
-  `mongodb+srv://obi:10Sora5864@strivemodule6.qilw9.mongodb.net/Module8?retryWrites=true&w=majority`
-);
+mongoose.connect(process.env.MONGO_CONNECTION);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected to Mongo");
