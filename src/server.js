@@ -13,10 +13,13 @@ const PORT = 3001;
 server.use(express.json());
 server.use(cors());
 
-server.use("/", UserRouter);
+server.use("/users", UserRouter);
 server.use("/blogs", blogsRouter);
 
-mongoose.connect(process.env.MONGO_CONNECTION);
+// mongoose.connect(process.env.MONGO_CONNECTION);
+mongoose.connect(
+  "mongodb+srv://obi:10Sora5864@strivemodule6.qilw9.mongodb.net/Module8?retryWrites=true&w=majority"
+);
 
 mongoose.connection.on("connected", () => {
   console.log("Connected to Mongo");
