@@ -2,14 +2,16 @@
 import express from "express";
 import usersSchema from "./usersSchema.js";
 import createHttpError from "http-errors";
+import { authorization } from "../middlewares/authorization.js";
 
 const UserRouter = express.Router();
 
 UserRouter.route("/")
-  .get(async (req, res, next) => {
+  .get(authorization, async (req, res, next) => {
     try {
       const user = await usersSchema.find();
       res.status(200).send(user);
+      console.log("auth");
     } catch (error) {
       console.log(error);
       next(error);
