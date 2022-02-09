@@ -1,9 +1,9 @@
 /** @format */
 import express from "express";
-import usersSchema from "./usersSchema.js";
+import usersSchema from "./usersSchema";
 import createHttpError from "http-errors";
-import { authorization } from "../middlewares/authorization.js";
-import { adminOnlyMiddleware } from "../middlewares/adminHandle.js";
+import { authorization } from "../middlewares/authorization";
+import { adminOnlyMiddleware } from "../middlewares/adminHandle";
 
 const UserRouter = express.Router();
 
@@ -21,7 +21,7 @@ UserRouter.route("/")
 
   .post(async (req, res, next) => {
     try {
-      const newUser = await usersSchema(req.body).save();
+      const newUser = await new (req.body).save();
       res.status(201).send(newUser);
     } catch (error) {
       console.log(error);
@@ -84,3 +84,4 @@ UserRouter.route("/:userId")
     }
   });
 export default UserRouter;
+

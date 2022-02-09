@@ -1,8 +1,9 @@
 /** @format */
 
 import createHttpError from "http-errors";
+import {Request} from "express";
 
-export const adminOnlyMiddleware = (req, res, next) => {
+export const adminOnlyMiddleware = (req: Request, next: (arg: unknown) => void) => {
   if (req.user.role === "Admin") {
     next();
   } else {

@@ -1,6 +1,6 @@
 /** @format */
 import express from "express";
-import blogsSchema from "./blogsSchema.js";
+import blogsSchema from "./blogsSchema";
 import createHttpError from "http-errors";
 import q2m from "query-to-mongo";
 

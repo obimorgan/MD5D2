@@ -4,10 +4,10 @@ import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
 import listEndpoints from "express-list-endpoints";
-import UserRouter from "./users/userRouter.js";
-import blogsRouter from "./blogs/blogsRouter.js";
-import userMeRouter from "./user-me/userMeRouter.js";
-import { errorHandlers } from "./middlewares/errorHandlers.js";
+import UserRouter from "./users/userRouter";
+import blogsRouter from "./blogs/blogsRouter";
+import userMeRouter from "./user-me/userMeRouter";
+import { errorHandlers } from "./middlewares/errorHandlers";
 
 const server = express();
 const PORT = 3001;
@@ -21,7 +21,7 @@ server.use("/users", UserRouter);
 server.use("/blogs", blogsRouter);
 server.use("/me", userMeRouter);
 
-mongoose.connect(process.env.MONGO_CONNECTION);
+mongoose.connect(process.env.MONGO_CONNECTION)
 
 mongoose.connection.on("connected", () => {
   console.log("Connected to Mongo");
