@@ -12,6 +12,7 @@ const usersSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["User", "Admin"], default: "User" },
+    blogs: [{ type: Schema.Types.ObjectId, ref: "Blogs" }],
   },
   { timestamps: true }
 );

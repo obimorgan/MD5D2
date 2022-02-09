@@ -2,6 +2,7 @@
 import express from "express";
 import blogsSchema from "./blogsSchema.js";
 import createHttpError from "http-errors";
+import q2m from "query-to-mongo";
 
 const blogsRouter = express.Router();
 
@@ -9,7 +10,8 @@ blogsRouter
   .route("/")
   .get(async (req, res, next) => {
     try {
-      const blog = await blogsSchema.find();
+      const mongoQuery = q2m(req.query);
+      const blog = await blogsSchema.find(mongoQuery).populate("authors");
       res.status(200).send(blog);
     } catch (error) {
       console.log(error);
