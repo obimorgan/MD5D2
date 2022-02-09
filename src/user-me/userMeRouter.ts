@@ -1,11 +1,11 @@
 /** @format */
-import express, {Request, Response, Express} from "express";
-import { authorization } from "../middlewares/authorization.js";
-import blogsSchema from "../blogs/blogsSchema.js";
+import express, {Request, Response, NextFunction} from "express";
+import { authorization } from "../middlewares/authorization";
+import blogsSchema from "../blogs/blogsSchema";
 
 const userMeRouter = express.Router();
 
-userMeRouter.route("/stories").get(authorization, async(req: Request, res: Response, next: (arg: unknown) => void) => {
+userMeRouter.get("/stories", authorization, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const blogPosts = await blogsSchema
       .find({

@@ -5,18 +5,18 @@ import bcrypt from "bcrypt";
 
 const { Schema, model } = mongoose;
 
-export interface userDocument extends mongoose.Document {
-    first_name: string
-    last_name: string
-    email: string
-    password: string
-    role: string
+export interface Iuser {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  role: string
   blogs: string
   createdAt: Date
   updatedAt: Date
 }
 
-const usersSchema = new Schema(
+const usersSchema = new Schema<Iuser>(
   {
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },

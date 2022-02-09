@@ -1,6 +1,7 @@
 /** @format */
+import {Response, NextFunction} from 'express'
 
-export const errorHandlers = (err, req, res, next) => {
+export const errorHandlers = (err: Error, res: Response, next: NextFunction) => {
   switch (err.name) {
     case "BadRequestError":
     case "ValidationError":

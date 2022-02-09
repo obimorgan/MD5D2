@@ -2,9 +2,10 @@
 
 import createHttpError from "http-errors";
 import atob from "atob";
-import usersSchema from "../users/usersSchema.js";
+import usersSchema, { Iuser } from "../users/usersSchema"
+import {Request, NextFunction} from 'express'
 
-export const authorization = async (req, res, next) => {
+export const authorization = async (req: Request, next: NextFunction) => {
   // We gonna receive something like --> Autorization: Basic ZGllZ29AYmFub3Zhei5jb206MTIzNA==
   // 1. Check if Authorization header is provided, if it is not --> trigger an error (401)
   if (!req.headers.authorization) {
@@ -22,11 +23,11 @@ export const authorization = async (req, res, next) => {
     const [email, password] = decodedCredentials.split(":");
 
     // 3. Once we obtain credentials, it's time to find the user in db (by email), compare received password with the hashed one
-    const user = await usersSchema.checkCredentials(email, password);
+     const user = await (usersSchema as any).checkCredentials(email, password);
 
     if (user) {
       // 4. If credentials are fine, we can proceed to what is next (another middleware or route handler)
-      req.user = user; // we are attaching to the request the user document
+      (req as any).user = user; // we are attaching to the request the user document
       next();
     } else {
       // 5. If credentials are not fine (user not found OR password not correct) --> trigger an error
