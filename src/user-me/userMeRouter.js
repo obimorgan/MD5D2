@@ -5,21 +5,22 @@ import blogsSchema from "../blogs/blogsSchema.js";
 
 const userMeRouter = express.Router();
 
+userMeRouter.route("/stories").get(authorization, async (req, res, next) => {
+  try {
+    const blogPosts = await blogsSchema
+      .find({
+        authors: req.user._id, //user._id comes from the authorizations (username and password)
+      })
+      .populate("blogs");
+    console.log(req.user._id);
+    res.send(blogPosts);
+  } catch (error) {
+    next(error);
+  }
+});
+
 userMeRouter
-  .route("/stories")
-  .get(authorization, async (req, res, next) => {
-    try {
-      const blogPosts = await blogsSchema
-        .find({
-          authors: req.user._id, //user._id comes from the authorizations (username and password)
-        })
-        .populate("authors");
-      console.log(req.user._id);
-      res.send(blogPosts);
-    } catch (error) {
-      next(error);
-    }
-  })
+  .route("/")
   .put(authorization, async (req, res, next) => {
     try {
       req.user.first_name = "John";
