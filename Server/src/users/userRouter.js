@@ -36,7 +36,7 @@ UserRouter.route("/")
     }
   })
 
-  .post(async (req, res, next) => {
+  .post(JWTAuthorization, async (req, res, next) => {
     try {
       const newUser = await usersSchema(req.body).save();
       res.status(201).send(newUser);

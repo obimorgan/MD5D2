@@ -3,7 +3,7 @@ import express from "express";
 import blogsSchema from "./blogsSchema.js";
 import createHttpError from "http-errors";
 import q2m from "query-to-mongo";
-
+import { JWTAuthentication } from "../middlewares/JWTAuthentication.js";
 const blogsRouter = express.Router();
 
 blogsRouter
@@ -19,7 +19,7 @@ blogsRouter
     }
   })
 
-  .post(async (req, res, next) => {
+  .post(JWTAuthentication, async (req, res, next) => {
     try {
       const newblog = await blogsSchema(req.body).save();
       res.status(201).send(newblog);
@@ -31,7 +31,7 @@ blogsRouter
 
 blogsRouter
   .route("/:BlogId")
-  .get(async (req, res, next) => {
+  .get(JWTAuthentication, async (req, res, next) => {
     try {
       const blogId = req.params.BlogId;
       const Blog = await blogsSchema.findById(blogId);
@@ -47,7 +47,7 @@ blogsRouter
       next(error);
     }
   })
-  .put(async (req, res, next) => {
+  .put(JWTAuthentication, async (req, res, next) => {
     try {
       const blogId = req.params.BlogId;
       const editBlog = await blogsSchema.findByIdAndUpdate(blogId, req.body, {
@@ -66,7 +66,7 @@ blogsRouter
       next(error);
     }
   })
-  .delete(async (req, res, next) => {
+  .delete(JWTAuthentication, async (req, res, next) => {
     console.log("hello");
     try {
       const blogId = req.params.BlogId;
