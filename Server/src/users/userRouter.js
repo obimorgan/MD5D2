@@ -4,11 +4,28 @@ import usersSchema from "./usersSchema.js";
 import createHttpError from "http-errors";
 import { authorization } from "../middlewares/authorization.js";
 import { adminOnlyMiddleware } from "../middlewares/adminHandle.js";
+import { JWTAuthentication } from "../middlewares/JWTAuthentication.js";
+import { JWTAuthorization } from "../middlewares/JWTAuthorization.js";
 
 const UserRouter = express.Router();
 
+UserRouter.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await usersSchema.checkCredentials(email, password);
+    if (user) {
+      const accessToken = await JWTAuthentication(user);
+      res.send({ accessToken });
+    } else {
+      next(401, "Provide valid credentials");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 UserRouter.route("/")
-  .get(authorization, async (req, res, next) => {
+  .get(JWTAuthorization, async (req, res, next) => {
     try {
       const user = await usersSchema.find();
       res.status(200).send(user);
