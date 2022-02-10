@@ -1,5 +1,5 @@
 /** @format */
-import express from "express";
+import express, {Request, Response, NextFunction} from "express";
 import usersSchema from "./usersSchema";
 import createHttpError from "http-errors";
 import { authorization } from "../middlewares/authorization";
@@ -7,8 +7,8 @@ import { adminOnlyMiddleware } from "../middlewares/adminHandle";
 
 const UserRouter = express.Router();
 
-UserRouter.route("/")
-  .get(authorization, async (req, res, next) => {
+UserRouter.get("/", authorization, async (req: Request, res: Response, next: NextFunction) => {
+  //  .get(authorization, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = await usersSchema.find();
       res.status(200).send(user);
@@ -19,9 +19,9 @@ UserRouter.route("/")
     }
   })
 
-  .post(async (req, res, next) => {
+  .post(async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const newUser = await new (req.body).save();
+      const newUser = await new usersSchema(req.body).save();
       res.status(201).send(newUser);
     } catch (error) {
       console.log(error);
@@ -30,7 +30,7 @@ UserRouter.route("/")
   });
 
 UserRouter.route("/:userId")
-  .get(async (req, res, next) => {
+  .get(async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.params.userId;
       const user = await usersSchema.findById(userId);
@@ -46,7 +46,7 @@ UserRouter.route("/:userId")
       next(error);
     }
   })
-  .put(authorization, adminOnlyMiddleware, async (req, res, next) => {
+  .put((authorization as any), (adminOnlyMiddleware as any), async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.params.userId;
       const edituser = await usersSchema.findByIdAndUpdate(userId, req.body, {
@@ -65,7 +65,7 @@ UserRouter.route("/:userId")
       next(error);
     }
   })
-  .delete(authorization, adminOnlyMiddleware, async (req, res, next) => {
+   .delete((authorization as any), (adminOnlyMiddleware as any), async (req: Request, res: Response, next: NextFunction) => {
     console.log("hello");
     try {
       const userId = req.params.userId;
@@ -84,4 +84,3 @@ UserRouter.route("/:userId")
     }
   });
 export default UserRouter;
-

@@ -1,5 +1,5 @@
 /** @format */
-import express, {Request, Response, NextFunction} from "express";
+import express, {Request, Response, NextFunction, Document} from "express";
 import { authorization } from "../middlewares/authorization";
 import blogsSchema from "../blogs/blogsSchema";
 
@@ -9,7 +9,7 @@ userMeRouter.get("/stories", authorization, async (req: Request, res: Response, 
   try {
     const blogPosts = await blogsSchema
       .find({
-        authors: req.user._id, //user._id comes from the authorizations (username and password)
+        authors: req.(user as Document)._id, //user._id comes from the authorizations (username and password)
       })
       .populate("blogs");
     console.log(req.user._id);

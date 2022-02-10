@@ -2,8 +2,9 @@
 
 import createHttpError from "http-errors";
 import atob from "atob";
-import usersSchema, { Iuser } from "../users/usersSchema"
-import {Request, NextFunction} from 'express'
+import usersSchema from "../users/usersSchema"
+import { Request, NextFunction } from 'express'
+
 
 export const authorization = async (req: Request, next: NextFunction) => {
   // We gonna receive something like --> Autorization: Basic ZGllZ29AYmFub3Zhei5jb206MTIzNA==
@@ -23,7 +24,7 @@ export const authorization = async (req: Request, next: NextFunction) => {
     const [email, password] = decodedCredentials.split(":");
 
     // 3. Once we obtain credentials, it's time to find the user in db (by email), compare received password with the hashed one
-     const user = await (usersSchema as any).checkCredentials(email, password);
+     const user = await usersSchema.checkCredentials(email, password);
 
     if (user) {
       // 4. If credentials are fine, we can proceed to what is next (another middleware or route handler)

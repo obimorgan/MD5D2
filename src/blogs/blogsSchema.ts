@@ -2,16 +2,29 @@
 
 import mongoose from "mongoose";
 
+interface Icomments {
+  comments: string,
+  id: number
+}
+
+interface IblogsSchema {
+  blog_title: string
+  description: string
+  reading_time: number
+  authors: string
+  comments: Icomments[]
+}
+
 const { Schema, model } = mongoose;
 
-const commentsSchema = new Schema(
+const commentsSchema = new Schema<Icomments>(
   {
-    comment: { type: String, required: true },
+    comments: String
   },
   { timestamps: true }
 );
 
-const blogsSchema = new Schema(
+const blogsSchema = new Schema <IblogsSchema>(
   {
     blog_title: { type: String, required: true },
     description: String,

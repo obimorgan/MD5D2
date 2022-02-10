@@ -1,20 +1,8 @@
 /** @format */
 
-import mongoose from "mongoose";
+import {model, Schema} from "mongoose";
 import bcrypt from "bcrypt";
-
-const { Schema, model } = mongoose;
-
-export interface Iuser {
-  first_name: string
-  last_name: string
-  email: string
-  password: string
-  role: string
-  blogs: string
-  createdAt: Date
-  updatedAt: Date
-}
+import {Iuser, IuserModel} from '../types/users'
 
 const usersSchema = new Schema<Iuser>(
   {
@@ -25,6 +13,7 @@ const usersSchema = new Schema<Iuser>(
     role: { type: String, enum: ["User", "Admin"], default: "User" },
     blogs: [{ type: Schema.Types.ObjectId, ref: "Blogs" }],
   },
+
   { timestamps: true }
 );
 
@@ -54,9 +43,9 @@ usersSchema.methods.toJSON = function () {
   return userObject;
 };
 
-usersSchema.statics.checkCredentials = async function (email, plainPW) {
+usersSchema.statics.checkCredentials = async function (email: string, plainPW: string) {
   // 1. find the user by email
-  const user = await this.findOne({ email }); // "this" here refers to UserModel
+  const user: Iuser= await this.findOne({ email }); // "this" here refers to UserModel
 
   if (user) {
     // 2. if the user is found --> compare plainPw with the hashed one
@@ -74,4 +63,4 @@ usersSchema.statics.checkCredentials = async function (email, plainPW) {
   }
 };
 
-export default model("User", usersSchema);
+export default model<Iuser, IuserModel>("User", usersSchema);
