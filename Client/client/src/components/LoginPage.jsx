@@ -1,4 +1,4 @@
-import { Container, Form } from "react-bootstrap"
+import { Container, Form, Button } from "react-bootstrap"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -37,7 +37,7 @@ export const LoginPage = () => {
         }
     }
     return (
-        <Container className="App">
+        <Container>
             <Form onSubmit={handleLogin}>
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
@@ -49,6 +49,9 @@ export const LoginPage = () => {
                     <Form.Control type="password" placeholder="Password" value={login.password}
                         onChange={e => { handleInput("password", e.target.value) }} />
                 </Form.Group>
+                <Button variant="primary" type="submit">
+                    Submit
+                </Button>
             </Form>
         </Container>
     )

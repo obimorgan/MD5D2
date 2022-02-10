@@ -1,11 +1,11 @@
-import { Jumbotron } from "react-bootstrap/Jumbotron"
+import { Container } from "react-bootstrap"
 
 export const Home = () => {
     return (
-        <>
-            <Jumbotron>
-                <h1>Home</h1>
-            </Jumbotron>
-        </>
+        <Container>
+            <h1>
+                Welcome Home User
+            </h1>
+        </Container>
     )
 }
