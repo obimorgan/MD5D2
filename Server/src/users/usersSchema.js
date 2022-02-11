@@ -13,6 +13,7 @@ const usersSchema = new Schema(
     password: { type: String, required: true },
     role: { type: String, enum: ["User", "Admin"], default: "User" },
     blogs: [{ type: Schema.Types.ObjectId, ref: "Blogs" }],
+    refreshToken: String,
   },
   { timestamps: true }
 );

@@ -2,16 +2,21 @@
 import express from "express";
 import { authorization } from "../middlewares/authorization.js";
 import blogsSchema from "../blogs/blogsSchema.js";
+import { JWTAuthorization } from "../middlewares/JWTAuthorization.js";
 
 const userMeRouter = express.Router();
 
-userMeRouter.route("/stories").get(authorization, async (req, res, next) => {
+userMeRouter.route("/stories").get(JWTAuthorization, async (req, res, next) => {
   try {
     const blogPosts = await blogsSchema
+      // .find({
+      //   authors: req.user._id, //user._id comes from the authorizations (username and password)
+      // })
+      // .populate("blogs");
       .find({
         authors: req.user._id, //user._id comes from the authorizations (username and password)
-      })
-      .populate("blogs");
+      });
+    // .populate("blogs");
     console.log(req.user._id);
     res.send(blogPosts);
   } catch (error) {
@@ -21,7 +26,7 @@ userMeRouter.route("/stories").get(authorization, async (req, res, next) => {
 
 userMeRouter
   .route("/")
-  .put(authorization, async (req, res, next) => {
+  .put(JWTAuthorization, async (req, res, next) => {
     try {
       req.user.first_name = "John";
       await req.user.save();
@@ -30,7 +35,7 @@ userMeRouter
       next(error);
     }
   })
-  .delete(authorization, async (req, res, next) => {
+  .delete(JWTAuthorization, async (req, res, next) => {
     try {
       await req.user.deleteOne();
       res.send();

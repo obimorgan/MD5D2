@@ -4,18 +4,37 @@ import usersSchema from "./usersSchema.js";
 import createHttpError from "http-errors";
 import { authorization } from "../middlewares/authorization.js";
 import { adminOnlyMiddleware } from "../middlewares/adminHandle.js";
-import { JWTAuthentication } from "../middlewares/JWTAuthentication.js";
+import {
+  JWTAuthentication,
+  verifyRefreshTokenAndGenerateNewTokens,
+} from "../middlewares/JWTAuthentication.js";
 import { JWTAuthorization } from "../middlewares/JWTAuthorization.js";
 
 const UserRouter = express.Router();
+
+UserRouter.route("/register").get(async (req, res, next) => {
+  try {
+    const user = await usersSchema.find();
+    res.status(200).send(user);
+    console.log("auth");
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
 UserRouter.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await usersSchema.checkCredentials(email, password);
     if (user) {
-      const accessToken = await JWTAuthentication(user);
-      res.send({ accessToken });
+      // Geneate only one token
+      // const accessToken = await JWTAuthentication(user);
+      // res.send({ accessToken });
+
+      //Generates a refresh/a second token and store in the
+      const { accessToken, refreshToken } = await JWTAuthentication(user);
+      res.send({ accessToken, refreshToken });
     } else {
       next(401, "Provide valid credentials");
     }
@@ -24,8 +43,19 @@ UserRouter.post("/login", async (req, res, next) => {
   }
 });
 
+UserRouter.post("/refreshToken", async (req, res, next) => {
+  try {
+    const { currentRefreshToken } = req.body;
+    const { accessToken, refreshToken } =
+      await verifyRefreshTokenAndGenerateNewTokens(currentRefreshToken);
+    res.send({ accessToken, refreshToken });
+  } catch (error) {
+    next(error);
+  }
+});
+
 UserRouter.route("/")
-  .get(JWTAuthorization, async (req, res, next) => {
+  .get(async (req, res, next) => {
     try {
       const user = await usersSchema.find();
       res.status(200).send(user);
