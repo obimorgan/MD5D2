@@ -14,6 +14,7 @@ const usersSchema = new Schema(
     role: { type: String, enum: ["User", "Admin"], default: "User" },
     blogs: [{ type: Schema.Types.ObjectId, ref: "Blogs" }],
     refreshToken: String,
+    googleId: String,
   },
   { timestamps: true }
 );

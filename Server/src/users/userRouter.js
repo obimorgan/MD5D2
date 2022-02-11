@@ -9,6 +9,7 @@ import {
   verifyRefreshTokenAndGenerateNewTokens,
 } from "../middlewares/JWTAuthentication.js";
 import { JWTAuthorization } from "../middlewares/JWTAuthorization.js";
+import passport from "passport";
 
 const UserRouter = express.Router();
 
@@ -28,7 +29,7 @@ UserRouter.post("/login", async (req, res, next) => {
     const { email, password } = req.body;
     const user = await usersSchema.checkCredentials(email, password);
     if (user) {
-      // Geneate only one token
+      // Generate access token
       // const accessToken = await JWTAuthentication(user);
       // res.send({ accessToken });
 
@@ -43,16 +44,29 @@ UserRouter.post("/login", async (req, res, next) => {
   }
 });
 
-UserRouter.post("/refreshToken", async (req, res, next) => {
-  try {
-    const { currentRefreshToken } = req.body;
-    const { accessToken, refreshToken } =
-      await verifyRefreshTokenAndGenerateNewTokens(currentRefreshToken);
-    res.send({ accessToken, refreshToken });
-  } catch (error) {
-    next(error);
+//----------------------------------------Google logIn endPoint------------------------------//
+UserRouter.get(
+  "/googleLogin",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+); // This endpoint receives Google Login requests from our FE, and it is going to redirect users to Google Consent Screen
+
+UserRouter.get(
+  "/googleRedirect", // This endpoint URL should match EXACTLY the one configured on google.cloud dashboard
+  passport.authenticate("google"),
+  async (req, res, next) => {
+    try {
+      console.log("TOKENS: ", req.user.tokens);
+      // SEND BACK TOKENS
+      res.redirect(
+        `${process.env.FE_URL}?accessToken=${req.user.tokens.accessToken}&refreshToken=${req.user.tokens.refreshToken}`
+      );
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
+
+//----------------------------------------------------------------------//
 
 UserRouter.route("/")
   .get(async (req, res, next) => {

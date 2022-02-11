@@ -1,6 +1,7 @@
-import { Container, Form, Button } from "react-bootstrap"
+import { Container, Form, Button, Col } from "react-bootstrap"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { Google } from "./Google"
 
 export const LoginPage = () => {
 
@@ -37,22 +38,27 @@ export const LoginPage = () => {
         }
     }
     return (
-        <Container>
-            <Form onSubmit={handleLogin}>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" value={login.email}
-                        onChange={e => { handleInput('email', e.target.value) }} />
-                </Form.Group>
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={login.password}
-                        onChange={e => { handleInput("password", e.target.value) }} />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-            </Form>
+        <Container className="d-flex mt-5">
+            <Col>
+                <Form onSubmit={handleLogin}>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control type="email" placeholder="Enter email" value={login.email}
+                            onChange={e => { handleInput('email', e.target.value) }} />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicPassword">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password" value={login.password}
+                            onChange={e => { handleInput("password", e.target.value) }} />
+                    </Form.Group>
+                    <Button className="mt-2" variant="primary" type="submit">
+                        Login
+                    </Button>
+                </Form>
+            </Col>
+            <Col className="mt-2">
+                <Google />
+            </Col>
         </Container>
     )
 }
