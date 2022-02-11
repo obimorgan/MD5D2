@@ -22,7 +22,7 @@ const googleStrategy = new GoogleStrategy(
 
       if (user) {
         // 2. If the user is already there --> create some tokens for him/her
-        const tokens = await JWTAuthenticate(user);
+        const tokens = await JWTAuthentication(user);
         // 3. Next
         passportNext(null, { tokens }); // passportNext attaches tokens to req.user --> req.user.tokens
       } else {
@@ -35,7 +35,7 @@ const googleStrategy = new GoogleStrategy(
         });
 
         const savedUser = await newUser.save();
-        const tokens = await JWTAuthenticate(savedUser);
+        const tokens = await JWTAuthentication(savedUser);
         // 5. Next
         passportNext(null, { tokens });
       }

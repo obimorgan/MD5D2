@@ -44,6 +44,17 @@ UserRouter.post("/login", async (req, res, next) => {
   }
 });
 
+UserRouter.post("/refreshToken", async (req, res, next) => {
+  try {
+    const { currentRefreshToken } = req.body;
+    const { accessToken, refreshToken } =
+      await verifyRefreshTokenAndGenerateNewTokens(currentRefreshToken);
+    res.send({ accessToken, refreshToken });
+  } catch (error) {
+    next(error);
+  }
+});
+
 //----------------------------------------Google logIn endPoint------------------------------//
 UserRouter.get(
   "/googleLogin",

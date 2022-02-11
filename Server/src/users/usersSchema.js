@@ -7,10 +7,10 @@ const { Schema, model } = mongoose;
 
 const usersSchema = new Schema(
   {
-    first_name: { type: String, required: true },
-    last_name: { type: String, required: true },
+    first_name: { type: String },
+    last_name: { type: String },
     email: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String },
     role: { type: String, enum: ["User", "Admin"], default: "User" },
     blogs: [{ type: Schema.Types.ObjectId, ref: "Blogs" }],
     refreshToken: String,
