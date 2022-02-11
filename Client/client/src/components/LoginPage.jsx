@@ -31,7 +31,7 @@ export const LoginPage = () => {
                 }
             })
             if (response.ok) {
-                navigate("/home")
+                navigate("/")
             }
         } catch (error) {
             console.log(error)
