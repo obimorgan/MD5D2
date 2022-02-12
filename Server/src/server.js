@@ -17,7 +17,7 @@ const PORT = 3001;
 passport.use("google", googleStrategy);
 server.use(express.json());
 server.use(cors());
-server.use(passport.initialize());
+server.use(passport.initialize()); //attaches google credentials to passport
 
 server.use(errorHandlers);
 

@@ -15,7 +15,7 @@ const googleStrategy = new GoogleStrategy(
     try {
       // this callback is executed when Google gives us a successfull response
       // here we are receiving some informations about the user from Google (profile, email)
-      console.log("PROFILE: ", profile);
+      // console.log("PROFILE: ", profile);
 
       // 1. Check if the user is already in our db
       const user = await usersSchema.findOne({ googleId: profile.id });
@@ -28,8 +28,8 @@ const googleStrategy = new GoogleStrategy(
       } else {
         // 4. If user is not in db --> add user to db and then create some tokens for him/her
         const newUser = new usersSchema({
-          name: profile.name.givenName,
-          surname: profile.name.familyName,
+          first_name: profile.name.givenName,
+          last_name: profile.name.familyName,
           email: profile.emails[0].value,
           googleId: profile.id,
         });
